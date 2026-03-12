@@ -1,0 +1,40 @@
+// fibonacci.tiny — classic Fibonacci (recursive + iterative)
+// Run: node index.js examples/fibonacci.tiny
+
+// ── Recursive Fibonacci ──────────────────────────────────────────
+function fib(n) {
+  if (n <= 1) {
+    return n
+  }
+  return fib(n - 1) + fib(n - 2)
+}
+
+print("Fibonacci sequence (recursive, first 11 terms):")
+let i = 0
+while (i <= 10) {
+  print(fib(i))
+  i = i + 1
+}
+
+// ── Iterative Fibonacci (more efficient for large n) ─────────────
+function fibIterative(n) {
+  if (n <= 1) {
+    return n
+  }
+  let a    = 0
+  let b    = 1
+  let step = 2
+  while (step <= n) {
+    let next = a + b
+    a    = b
+    b    = next
+    step = step + 1
+  }
+  return b
+}
+
+print("fib(20) =")
+print(fibIterative(20))   // 6765
+
+print("fib(30) =")
+print(fibIterative(30))   // 832040

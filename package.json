@@ -1,0 +1,15 @@
+{
+  "name": "tinyscript-interpreter",
+  "version": "1.0.0",
+  "description": "A mini programming language interpreter built in JavaScript — with lexer, parser, AST, and execution engine.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "repl": "node index.js --repl",
+    "demo": "node index.js",
+    "run": "node index.js"
+  },
+  "keywords": ["interpreter", "language", "ast", "lexer", "parser", "compiler"],
+  "author": "",
+  "license": "MIT"
+}

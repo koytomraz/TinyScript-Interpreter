@@ -1,0 +1,42 @@
+// closures.tiny — functions closing over outer variables
+// Run: node index.js examples/closures.tiny
+
+// makeAdder returns a function that adds `n` to its argument.
+function makeAdder(n) {
+  function adder(x) {
+    return x + n
+  }
+  return adder
+}
+
+let add5  = makeAdder(5)
+let add10 = makeAdder(10)
+
+print(add5(3))    // 8
+print(add10(3))   // 13
+print(add5(add10(1)))  // 16   (add5(11))
+
+// Counter using a closure over a mutable variable
+function makeCounter(start) {
+  let count = start
+
+  function increment() {
+    count = count + 1
+    return count
+  }
+
+  return increment
+}
+
+let counter = makeCounter(0)
+print(counter())   // 1
+print(counter())   // 2
+print(counter())   // 3
+
+// Two independent counters share no state
+let counterA = makeCounter(0)
+let counterB = makeCounter(100)
+print(counterA())  // 1
+print(counterB())  // 101
+print(counterA())  // 2
+print(counterB())  // 102

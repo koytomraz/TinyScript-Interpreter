@@ -1,0 +1,51 @@
+// functions.tiny — user-defined functions
+// Run: node index.js examples/functions.tiny
+
+// Basic function
+function square(n) {
+  return n * n
+}
+
+print(square(4))    // 16
+print(square(9))    // 81
+
+// Multiple parameters
+function add(a, b) {
+  return a + b
+}
+
+function multiply(a, b) {
+  return a * b
+}
+
+print(add(3, 7))         // 10
+print(multiply(4, 6))    // 24
+
+// Function calling another function
+function hypotenuse(a, b) {
+  return sqrt(square(a) + square(b))
+}
+
+print(hypotenuse(3, 4))  // 5
+
+// Function with conditional logic
+function absoluteValue(x) {
+  if (x < 0) {
+    return -x
+  }
+  return x
+}
+
+print(absoluteValue(-42))  // 42
+print(absoluteValue(17))   // 17
+
+// Recursive power function
+function power(base, exp) {
+  if (exp == 0) {
+    return 1
+  }
+  return base * power(base, exp - 1)
+}
+
+print(power(2, 10))   // 1024
+print(power(3, 4))    // 81

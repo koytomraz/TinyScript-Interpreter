@@ -1,0 +1,16 @@
+// basic.tiny — Variables and Arithmetic
+// Run: node index.js examples/basic.tiny
+
+let x = 5
+let y = 10
+let result = x + y
+print(result)           // 15
+
+let product = x * y
+print(product)          // 50
+
+let fraction = 7 / 2
+print(fraction)         // 3.5
+
+let expression = (x + y) * 2 - 3
+print(expression)       // 27

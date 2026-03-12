@@ -1,0 +1,32 @@
+// conditionals.tiny — if / else if / else
+// Run: node index.js examples/conditionals.tiny
+
+let temperature = 22
+
+if (temperature > 35) {
+  print("It is very hot outside!")
+} else if (temperature > 25) {
+  print("It is warm outside.")
+} else if (temperature > 15) {
+  print("It is a pleasant day.")
+} else if (temperature > 5) {
+  print("It is chilly outside.")
+} else {
+  print("It is freezing cold!")
+}
+
+// Boolean operators in conditions
+let age       = 20
+let hasTicket = true
+
+if (age >= 18 && hasTicket) {
+  print("Entry allowed.")
+} else {
+  print("Entry denied.")
+}
+
+// Negation
+let isRaining = false
+if (!isRaining) {
+  print("No umbrella needed.")
+}
