@@ -42,6 +42,11 @@ function AssignmentExpression(name, value) {
   return { type: 'AssignmentExpression', name, value };
 }
 
+/** name[...indexes] = value  (re-assignment to an already-declared variable) */
+function ArrayAssignment(name, indexes, value) {
+  return { type: 'ArrayAssignment', name, indexes, value };
+}
+
 /** left op right  — arithmetic and comparison */
 function BinaryExpression(operator, left, right) {
   return { type: 'BinaryExpression', operator, left, right };
@@ -112,6 +117,16 @@ function ExpressionStatement(expression) {
   return { type: 'ExpressionStatement', expression };
 }
 
+/** Array expression */
+function ArrayLiteral(value) {
+  return { type: 'ArrayLiteral', value };
+}
+
+/** name[...indexes] */
+function IndexExpression(array, indexes) {
+  return { type: 'IndexExpression', array, indexes };
+}
+
 module.exports = {
   Program,
   VariableDeclaration,
@@ -130,4 +145,7 @@ module.exports = {
   ReturnStatement,
   BlockStatement,
   ExpressionStatement,
+  ArrayLiteral,
+  IndexExpression,
+  ArrayAssignment
 };
