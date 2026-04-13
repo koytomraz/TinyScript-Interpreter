@@ -133,6 +133,15 @@ print(counter())   // 1
 print(counter())   // 2
 print(counter())   // 3
 ```
+### Lists and Arrays
+The realization is not entirely completed
+```
+let some_list = [1, 2, "some string"]
+print(some_list[1]) //2
+
+let two_dim = [[1, 2], [3, 4]]
+print(print(two_dim[1][0])) //3
+```
 
 ---
 
