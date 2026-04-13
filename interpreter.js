@@ -95,6 +95,7 @@ class Interpreter {
       if (typeof val === 'boolean')       return 'boolean';
       if (typeof val === 'number')        return 'number';
       if (typeof val === 'string')        return 'string';
+      if (val.constructor === Array)      return 'array';
       if (val instanceof TinyFunction)    return 'function';
       if (val instanceof BuiltinFunction) return 'function';
       return 'unknown';
@@ -152,6 +153,7 @@ class Interpreter {
       case 'Program':             return this._evalProgram(node, env);
       case 'VariableDeclaration': return this._evalVarDecl(node, env);
       case 'AssignmentExpression':return this._evalAssignment(node, env);
+      case 'ArrayAssignment':     return this._evalArrayAssignment(node, env);
       case 'BinaryExpression':    return this._evalBinary(node, env);
       case 'LogicalExpression':   return this._evalLogical(node, env);
       case 'UnaryExpression':     return this._evalUnary(node, env);
@@ -159,6 +161,8 @@ class Interpreter {
       case 'NumericLiteral':      return node.value;
       case 'BooleanLiteral':      return node.value;
       case 'StringLiteral':       return node.value;
+      case 'IndexExpression':     return this._evalArrayExp(node, env);
+      case 'ArrayLiteral': 		  return node.value;
       case 'IfStatement':         return this._evalIf(node, env);
       case 'WhileStatement':      return this._evalWhile(node, env);
       case 'FunctionDeclaration': return this._evalFuncDecl(node, env);
@@ -233,6 +237,54 @@ class Interpreter {
     const fn = new TinyFunction(node.name, node.params, node.body, env);
     env.define(node.name, fn);
     return fn;
+  }
+
+  _evalArrayAssignment(node, env) {
+	  const value = node.value;
+	  const indexes = node.indexes
+	
+	  let currentArray = env.get(node.name);
+    for (let i = 0; i < indexes.length - 1; i++) {
+      const key = this._evalNode(indexes[i], env);
+
+      if (currentArray[key] == null) {
+        currentArray[key] = {};
+      } else if (typeof currentArray[key] !== "object") {
+        throw new Error('[Runtime] List index out of range');
+      }
+
+      currentArray = currentArray[key];
+    }
+
+    currentArray[this._evalNode(indexes[indexes.length - 1], env)] = value;
+	
+    env.set(node.name, currentArray);
+    return this._evalNode(value, env);
+  }
+
+  _evalArrayExp(node, env) {
+	  const currentArray = node.array;
+	  let currentValue;
+	  switch (currentArray.type) {
+	    case 'ArrayLiteral':
+	      currentValue = currentArray.value
+		    break;
+	    case 'Identifier':
+	      currentValue = env.get(currentArray.name);
+		    break;
+	    default:
+	      throw new Error('[Runtime] The array must be valid');
+	  }
+	  const indexes = node.indexes
+	  //let currentValue = currentArray.value
+	
+	  for (let key of indexes) {
+      const evalKey = this._evalNode(key, env);
+      if (currentValue === null || currentValue === undefined) throw new Error('[Runtime] List index out of range');
+      if (!(evalKey in currentValue)) throw new Error('[Runtime] List index out of range');
+      currentValue = this._evalNode(currentValue[evalKey], env);
+    }
+	  return currentValue;
   }
 
   _evalReturn(node, env) {
