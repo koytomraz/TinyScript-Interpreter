@@ -370,7 +370,7 @@ Variables and functions defined in one line persist for the entire session.
 
 The interpreter is intentionally small; here are suggested next steps:
 
-- **Arrays** — add `ArrayLiteral` and `IndexExpression` AST nodes, handle `[]` in the lexer
+- (WIP) **Arrays** — add `ArrayLiteral` and `IndexExpression` AST nodes, handle `[]` in the lexer
 - **For loops** — add `ForStatement` (init; condition; update) to the parser
 - **Null literal** — add a `null` keyword tokenized as `NullLiteral`
 - **Multi-line strings / template strings** — extend the lexer's `_readString`
