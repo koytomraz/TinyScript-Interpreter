@@ -229,29 +229,29 @@ class Parser {
     this._expect(TokenType.RBRACE);
     return AST.BlockStatement(body);
   }
-    
+  
   _parseArrayIndexing(arr) {
     // Getting the values
-	  // arr is either Identifier or ArrayLiteral
-	  if (this._check(TokenType.LSPAREN)){
-	    const indexes = [];
-	    while (this._check(TokenType.LSPAREN)){
-	      this._advance();
+	// arr is either Identifier or ArrayLiteral
+	if (this._check(TokenType.LSPAREN)){
+	  const indexes = [];
+	  while (this._check(TokenType.LSPAREN)){
+	    this._advance();
 		
-	      const index = this._parseExpression(); //stupid decision, change later
+	    const index = this._parseExpression(); //stupid decision, change later
 		
-	      this._expect(TokenType.RSPAREN);
+	    this._expect(TokenType.RSPAREN);
 		
-	      //if (indent.type !== 'Identifier') {
-          //  throw new SyntaxError('[Parser] Indexing only works for arrays or lists');
-          //}
+	    //if (indent.type !== 'Identifier') {
+        //  throw new SyntaxError('[Parser] Indexing only works for arrays or lists');
+        //}
 	  
-	      indexes.push(index)
-	    }
-	    return AST.IndexExpression(arr, indexes)
-	  } else {
-        return arr
+	    indexes.push(index)
 	  }
+	  return AST.IndexExpression(arr, indexes)
+	} else {
+      return arr
+	}
   }
 
   // ── Expressions (operator-precedence climb) ───────────────────────────────
@@ -268,7 +268,6 @@ class Parser {
     const left = this._parseLogicalOr();
     if (this._check(TokenType.ASSIGN)) {
       this._advance();
-      // Check if it's an Identifier or IndexExpression
       if ((left.type !== 'Identifier') && (left.type !== 'IndexExpression')) {
         throw new SyntaxError('[Parser] Invalid assignment target: left-hand side must be a variable name');
       }
@@ -412,27 +411,28 @@ class Parser {
       this._advance();
       return AST.BooleanLiteral(tok.value);
     }
-
-    // Identifier (variables, built-in names like `print`)
+	
+	// Identifier (variables, built-in names like `print`)
     if (tok.type === TokenType.IDENTIFIER) {
       this._advance();
-      return AST.Identifier(tok.value);
+	  const arrayLiteral = AST.Identifier(tok.value);
+	  return this._parseArrayIndexing(arrayLiteral);
     }
-
-    // Array expression
+	
+	// Array expression  (expr)
     if (tok.type === TokenType.LSPAREN) {
       this._advance();
-	    const arr = [];
-	    if (!this._check(TokenType.RSPAREN)) {
+	  const arr = [];
+	  if (!this._check(TokenType.RSPAREN)) {
+        arr.push(this._parsePrimary());
+        while (this._match(TokenType.COMMA)) {
           arr.push(this._parsePrimary());
-          while (this._match(TokenType.COMMA)) {
-            arr.push(this._parsePrimary());
-          }
         }
-        this._expect(TokenType.RSPAREN);
+      }
+      this._expect(TokenType.RSPAREN);
 	  
-	    const arrayLiteral = AST.ArrayLiteral(arr);
-	    return this._parseArrayIndexing(arrayLiteral);
+	  const arrayLiteral = AST.ArrayLiteral(arr);
+	  return this._parseArrayIndexing(arrayLiteral);
     }
 
     // Grouped expression  (expr)

@@ -24,9 +24,6 @@
  *  ReturnStatement      – return [value]
  *  BlockStatement       – { statements }
  *  ExpressionStatement  – expression used as a statement
- *  ArrayLiteral         – [array elements]
- *  IndexExpression      – getting index
- *  ArrayAssignment      – assignment to a certain index of an array
  */
 
 'use strict';

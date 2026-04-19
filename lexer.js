@@ -14,7 +14,6 @@
  *  Assignment: ASSIGN(=)
  *  Logical   : AND(&&)  OR(||)  NOT(!)
  *  Grouping  : LPAREN  RPAREN  LBRACE  RBRACE
- *  Arrays    : LSPAREN RSPAREN
  *  Misc      : COMMA  SEMICOLON
  *  End       : EOF
  *
@@ -280,9 +279,9 @@ class Lexer {
         case '}': this.tokens.push(new Token(TokenType.RBRACE, '}', line)); break;
         case ',': this.tokens.push(new Token(TokenType.COMMA,  ',', line)); break;
         case ';': this.tokens.push(new Token(TokenType.SEMICOLON, ';', line)); break;
-        case '[': this.tokens.push(new Token(TokenType.LSPAREN,  '[', line)); break;
+		case '[': this.tokens.push(new Token(TokenType.LSPAREN,  '[', line)); break;
         case ']': this.tokens.push(new Token(TokenType.RSPAREN, ']', line)); break;
-
+		
         case '=':
           this.tokens.push(this._match('=')
             ? new Token(TokenType.EQ,     '==', line)

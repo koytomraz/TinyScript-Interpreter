@@ -133,15 +133,6 @@ print(counter())   // 1
 print(counter())   // 2
 print(counter())   // 3
 ```
-### Lists and Arrays
-The realization is not entirely completed
-```
-let some_list = [1, 2, "some string"]
-print(some_list[1]) //2
-
-let two_dim = [[1, 2], [3, 4]]
-print(print(two_dim[1][0])) //3
-```
 
 ---
 
@@ -370,7 +361,7 @@ Variables and functions defined in one line persist for the entire session.
 
 The interpreter is intentionally small; here are suggested next steps:
 
-- (WIP) **Arrays** — add `ArrayLiteral` and `IndexExpression` AST nodes, handle `[]` in the lexer
+- **Arrays** — add `ArrayLiteral` and `IndexExpression` AST nodes, handle `[]` in the lexer
 - **For loops** — add `ForStatement` (init; condition; update) to the parser
 - **Null literal** — add a `null` keyword tokenized as `NullLiteral`
 - **Multi-line strings / template strings** — extend the lexer's `_readString`

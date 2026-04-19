@@ -65,6 +65,21 @@ class TinyFunction {
   }
 }
 
+// ─── Array representations ─────────────────────────────────────────────────
+
+//class ArrayObject {
+  /**
+   * @param {object[]}      values     Values stored in that array
+   */
+/**  constructor(values) {
+    this.values = values;
+  }
+  
+  toString() {
+	return `<array object>`;
+  }
+}*/
+
 // ─── Interpreter ──────────────────────────────────────────────────────────────
 
 class Interpreter {
@@ -95,7 +110,7 @@ class Interpreter {
       if (typeof val === 'boolean')       return 'boolean';
       if (typeof val === 'number')        return 'number';
       if (typeof val === 'string')        return 'string';
-      if (val.constructor === Array)      return 'array';
+	  if (val.constructor === Array)      return 'array';
       if (val instanceof TinyFunction)    return 'function';
       if (val instanceof BuiltinFunction) return 'function';
       return 'unknown';
@@ -134,6 +149,17 @@ class Interpreter {
 
     // min(a, b)
     env.define('min', new BuiltinFunction('min', (a, b) => Math.min(a, b)));
+	
+	// ── Array functions ──────────────────────────────────────────────
+	
+	// min(a, b)
+    env.define('range', new BuiltinFunction('range', (from, to, step) => {
+		const outputArray = [];
+		for (from; to; from += step){
+			outputArray.push();
+		}
+		return outputArray;
+	}));
   }
 
   // ── Public API ────────────────────────────────────────────────────────────
@@ -153,7 +179,7 @@ class Interpreter {
       case 'Program':             return this._evalProgram(node, env);
       case 'VariableDeclaration': return this._evalVarDecl(node, env);
       case 'AssignmentExpression':return this._evalAssignment(node, env);
-      case 'ArrayAssignment':     return this._evalArrayAssignment(node, env);
+	  case 'ArrayAssignment':     return this._evalArrayAssignment(node, env);
       case 'BinaryExpression':    return this._evalBinary(node, env);
       case 'LogicalExpression':   return this._evalLogical(node, env);
       case 'UnaryExpression':     return this._evalUnary(node, env);
@@ -161,8 +187,8 @@ class Interpreter {
       case 'NumericLiteral':      return node.value;
       case 'BooleanLiteral':      return node.value;
       case 'StringLiteral':       return node.value;
-      case 'IndexExpression':     return this._evalArrayExp(node, env);
-      case 'ArrayLiteral': 		  return node.value;
+	  case 'IndexExpression':     return this._evalArrayExp(node, env);
+	  case 'ArrayLiteral': 		  return node.value;
       case 'IfStatement':         return this._evalIf(node, env);
       case 'WhileStatement':      return this._evalWhile(node, env);
       case 'FunctionDeclaration': return this._evalFuncDecl(node, env);
@@ -238,22 +264,29 @@ class Interpreter {
     env.define(node.name, fn);
     return fn;
   }
-
+  
+/*  _evalArrayDecl(node, env) {
+    // Capture the current scope as the closure environment.
+    const array = node.value;
+    env.define(node.name, array);
+    return array;
+  }*/
+  
   _evalArrayAssignment(node, env) {
-	  const value = node.value;
-	  const indexes = node.indexes
+	const value = node.value;
+	const indexes = node.indexes
 	
-	  let currentArray = env.get(node.name);
+	let currentArray = env.get(node.name);
     for (let i = 0; i < indexes.length - 1; i++) {
-      const key = this._evalNode(indexes[i], env);
+        const key = this._evalNode(indexes[i], env);
 
-      if (currentArray[key] == null) {
-        currentArray[key] = {};
-      } else if (typeof currentArray[key] !== "object") {
-        throw new Error('[Runtime] List index out of range');
-      }
+        if (currentArray[key] == null) {
+            currentArray[key] = {};
+        } else if (typeof currentArray[key] !== "object") {
+            throw new Error('[Runtime] List index out of range');
+        }
 
-      currentArray = currentArray[key];
+        currentArray = currentArray[key];
     }
 
     currentArray[this._evalNode(indexes[indexes.length - 1], env)] = value;
@@ -261,31 +294,40 @@ class Interpreter {
     env.set(node.name, currentArray);
     return this._evalNode(value, env);
   }
-
+  
   _evalArrayExp(node, env) {
-	  const currentArray = node.array;
-	  let currentValue;
-	  switch (currentArray.type) {
-	    case 'ArrayLiteral':
-	      currentValue = currentArray.value
-		    break;
-	    case 'Identifier':
-	      currentValue = env.get(currentArray.name);
-		    break;
-	    default:
-	      throw new Error('[Runtime] The array must be valid');
-	  }
-	  const indexes = node.indexes
-	  //let currentValue = currentArray.value
+	const currentArray = node.array;
+	let currentValue;
+	switch (currentArray.type) {
+	  case 'ArrayLiteral':
+	    currentValue = currentArray.value
+		break;
+	  case 'Identifier':
+	    currentValue = env.get(currentArray.name);
+		break;
+	  default:
+	    throw new Error('[Runtime] The array must be valid');
+	}
+	const indexes = node.indexes
+	//let currentValue = currentArray.value
 	
-	  for (let key of indexes) {
+	for (let key of indexes) {
       const evalKey = this._evalNode(key, env);
       if (currentValue === null || currentValue === undefined) throw new Error('[Runtime] List index out of range');
       if (!(evalKey in currentValue)) throw new Error('[Runtime] List index out of range');
       currentValue = this._evalNode(currentValue[evalKey], env);
     }
-	  return currentValue;
+	return currentValue;
   }
+  
+/**  _evalArrayLiteral(node, env) {
+	const currentArray = node.value
+	const array = []
+	for (let elmnt of currentArray){
+		array.push(this._evalNode(elmnt, env))
+	}
+	return array
+  }*/
 
   _evalReturn(node, env) {
     const value = node.value !== null ? this._evalNode(node.value, env) : null;
@@ -422,6 +464,15 @@ class Interpreter {
     if (value instanceof TinyFunction || value instanceof BuiltinFunction) {
       return value.toString();
     }
+	if (Array.isArray(value)) {
+		let stringOutput = "["
+		for (const [i, elem] of value.entries()) {
+			stringOutput += this._stringify(elem.value);
+			if (i !== value.length - 1) stringOutput += ", ";
+		}
+		stringOutput += "]"
+		return stringOutput
+	}
     return String(value);
   }
 }
